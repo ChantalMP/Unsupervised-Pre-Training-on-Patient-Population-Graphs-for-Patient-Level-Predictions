@@ -252,7 +252,7 @@ class TadpoleDataset(EHRDataset):
             for i in range(self.k): # add 5 neighrest neighbours to edges
                 edges.append((idx1, sorted_sims[i][0]))
                 edge_features.append(
-                    torch.tensor([torch.round(sorted_sims[0][1][1]*3), torch.round(sorted_sims[0][1][2]*100), torch.round(sorted_sims[0][1][3]*100)],
+                    torch.tensor([torch.round(sorted_sims[i][1][1]*3), torch.round(sorted_sims[i][1][2]*100), torch.round(sorted_sims[i][1][3]*100)],
                                  dtype=torch.int))
 
         edge_idx = torch.tensor(edges, dtype=torch.long)
