@@ -1,5 +1,7 @@
 # shell files to reproduce results
 
+all files need to be started from the repository root
+
 ## pretrain model for all folds of TADPOLE / MIMIC-III dataset
 - pre_training_mimic.sh: pre-training with feature and block-wise masking
 - pre_training_tadpole.sh: pre-training with random masking
