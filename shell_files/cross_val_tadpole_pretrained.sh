@@ -1,7 +1,7 @@
 #!/bin/sh
-# train from scratch models for all rotations and all label ratios
+# finetune models for all rotations and all label ratios
 
-  for lr in 0.01 0.05 0.1 0.5 1.0; do #0.01 0.05 0.1 0.5
+  for lr in 0.01 0.05 0.1 0.5 1.0; do
     # train model
     echo "label ratio ${lr}"
     python -m graphormer.entry --num_workers 0 --seed 1 --batch_size 1 --dataset_name tadpole_class --gpus 1 --accelerator "ddp" --ffn_dim 64 \
