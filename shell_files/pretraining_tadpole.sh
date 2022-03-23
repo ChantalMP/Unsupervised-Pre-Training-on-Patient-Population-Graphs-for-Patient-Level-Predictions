@@ -3,7 +3,7 @@
   mask_ratio=0.3
   # changed to pre-train mlp model
   echo "mask_ratio ${mask_ratio}"
-  for fold in 0 1 2 3 4 5 6 7 8 9; do #0.01 0.05 0.1 0.5
+  for fold in 0 1 2 3 4 5 6 7 8 9; do
     # train model
     echo "fold ${fold}"
     echo "pretraining"
