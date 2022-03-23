@@ -1,4 +1,4 @@
-# Unsupervised-Pre-Training-of-Graph-Transformers-on-Patient-Population-Graphs
+# Unsupervised Pre-Training on Patient Population Graphs for Patient-Level Predictions
 
 This is the official code to the following arxiv paper:
 
