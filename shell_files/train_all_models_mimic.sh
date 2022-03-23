@@ -51,9 +51,4 @@ for r in 0 1 2 7 8 9; do
     --checkpoint_path "exps/mimic/lightning_logs/pt_1_6_label_ratio_${lr}_rot${r}/checkpoints/best_auroc.pt" --compute_results
   done
 
-  # cleanup
-  if [ ${r} -ne 0 ]; then
-    python -m graphormer.utils.clean_up_zipping --rot $r
-  fi
-
 done
