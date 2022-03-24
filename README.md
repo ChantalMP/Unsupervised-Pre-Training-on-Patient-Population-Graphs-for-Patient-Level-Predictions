@@ -2,7 +2,7 @@
 
 This is the official code to the following arxiv paper:
 
-"Unsupervised Pre-Training on Patient Population Graphs for Patient-Level Predictions" (link will follow)
+["Unsupervised Pre-Training on Patient Population Graphs for Patient-Level Predictions"](https://arxiv.org/abs/2203.12616)
 
 ## Graphormer Model
 
@@ -13,4 +13,15 @@ Our model code is based on the work of Ying et al. "Do Transformers Really Perfo
 ## Citation
 Please cite this paper if you use the code:
 
-(citation will follow)
+```
+@misc{https://doi.org/10.48550/arxiv.2203.12616,
+  doi = {10.48550/ARXIV.2203.12616},
+  url = {https://arxiv.org/abs/2203.12616},
+  author = {Pellegrini, Chantal and Kazi, Anees and Navab, Nassir},
+  keywords = {Machine Learning (cs.LG), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {Unsupervised Pre-Training on Patient Population Graphs for Patient-Level Predictions},
+  publisher = {arXiv},
+  year = {2022},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+```
