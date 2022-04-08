@@ -278,21 +278,30 @@ class TadpoleDataset(EHRDataset):
                     idxs = np.concatenate((self.test_idxs, self.train_idxs))
 
                 # inductive: normalize only given training data
-                for col in [col for col in df.columns if col not in self.discrete_columns]:
+                for col in [col for col in df.columns if col not in self.discrete_columns and col != 'AGE']: #normalize imaging features
                     df[col] = (df[col] - df[col][self.train_idxs].min()) / (df[col][self.train_idxs].max() - df[col][self.train_idxs].min())
 
-                df = df[df.node_ID.isin(idxs)]
+                df_norm = df.copy() # in df age remains unnormalized, so we can compute age similarity
+                df_norm['AGE'] = (df['AGE'] - df['AGE'][self.train_idxs].min()) / (df['AGE'][self.train_idxs].max() - df['AGE'][self.train_idxs].min()) #normalize age for processing
+                df = df[df.node_ID.isin(idxs)] # unnormalized age
+                df_norm = df_norm[df_norm.node_ID.isin(idxs)] # normalized age
 
             else:
                 # transductive: normalize on all nodes
-                for col in [col for col in df.columns if col not in self.discrete_columns]:
+                for col in [col for col in df.columns if col not in self.discrete_columns and col != 'AGE']: #normalize imaging features
                     df[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
 
-            node_ids = np.array(df['node_ID'].values)
-            # drop labels and ids
-            drop_columns = ['DX_bl', 'node_ID']
+                df_norm = df.copy() # in df age remains unnormalized, so we can compute age similarity
+                df_norm['AGE'] = (df['AGE'] - df['AGE'].min()) / (df['AGE'].max() - df['AGE'].min()) #normalize age for processing
 
-            X = df.drop(drop_columns, axis=1)
+            node_ids = np.array(df_norm['node_ID'].values)
+            # drop labels and edge building features
+            if not self.use_sim_graph_tadpole:
+                drop_columns = ['DX_bl', 'AGE', 'PTGENDER', 'node_ID', 'DXCHANGE'] if self.full_data else ['DX_bl', 'AGE', 'PTGENDER', 'node_ID'] #we don't use edge features as node features here
+            else:
+                drop_columns = ['DX_bl', 'node_ID', 'DXCHANGE'] if self.full_data else ['DX_bl', 'node_ID']
+
+            X = df_norm.drop(drop_columns, axis=1)
 
             # discrete_columns without dropped ones
             discrete_features = [col for col in self.discrete_columns if col not in drop_columns]
@@ -300,17 +309,21 @@ class TadpoleDataset(EHRDataset):
             X = X[discrete_features + [col for col in X.columns if col not in discrete_features]]
 
             if not self.mask_all:
-                mask_columns = ['APOE4', 'CDRSB', 'ADAS11', 'MMSE', 'RAVLT_immediate']
+                mask_columns = ['APOE4', 'CDRSB', 'ADAS11', 'ADAS13', 'MMSE', 'RAVLT_immediate', 'RAVLT_learning',
+                                'RAVLT_forgetting', ] if self.full_data else ['APOE4', 'CDRSB', 'ADAS11', 'MMSE', 'RAVLT_immediate']
                 not_mask_column_indices = np.where(np.isin(X.columns, mask_columns, invert=True))
             else:
                 mask_columns = ['APOE4', 'CDRSB', 'ADAS11', 'ADAS13', 'MMSE', 'RAVLT_immediate', 'Hippocampus', 'WholeBrain', 'Entorhinal','MidTemp', 'FDG']
                 not_mask_column_indices = np.where(np.isin(X.columns, mask_columns, invert=True)) #dont mask age and gender
 
-            x, y = self.create_x_y(X_norm=X, df=df, label_key='DX_bl')
+            x, y = self.create_x_y(X_norm=X, df=df_norm, label_key='DX_bl')
 
-            train_mask, val_mask, test_mask = self.tadpole_train_val_test_masks(df)
+            train_mask, val_mask, test_mask = self.tadpole_train_val_test_masks(df_norm)
 
-            edge_idx, edge_features = self.create_edges_similarity_tadpole(df)
+            if not self.use_sim_graph_tadpole:
+                edge_idx, edge_features = self.create_edges(df, age_key='AGE', sex_key='PTGENDER', feature_type=2)
+            else:
+                edge_idx, edge_features = self.create_edges_similarity_tadpole(df)
 
             self.save_data(node_id=node_ids, x=x, edge_idx=edge_idx, edge_features=edge_features, y=y, final_mask=None, train_mask=train_mask,
                            val_mask=val_mask, test_mask=test_mask, not_mask_column_indices=not_mask_column_indices, split=self.split)
