@@ -4,6 +4,10 @@ This is the official code to the following arxiv paper:
 
 ["Unsupervised Pre-Training on Patient Population Graphs for Patient-Level Predictions"](https://arxiv.org/abs/2203.12616)
 
+We published an extension of this paper, which can be found here:
+
+["Unsupervised pre-training of graph transformers on patient population graphs"](https://arxiv.org/abs/2207.10603), [Code](https://github.com/ChantalMP/Unsupervised_pre-training_of_graph_transformers_on_patient_population_graphs)
+
 ## Graphormer Model
 
 Our model code is based on the work of Ying et al. "Do Transformers Really Perform Badly for Graph Representation?" [1], published in the following repository [https://github.com/microsoft/Graphormer](https://github.com/microsoft/Graphormer)
